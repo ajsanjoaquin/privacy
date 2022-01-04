@@ -19,12 +19,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics import auc, roc_curve
 import functools
+import os
+from os.path import join
+from absl import app, flags
+
+FLAGS = flags.FLAGS
 
 # Look at me being proactive!
 import matplotlib
 matplotlib.rcParams['pdf.fonttype'] = 42
 matplotlib.rcParams['ps.fonttype'] = 42
-
 
 def sweep(score, x):
     """
@@ -173,7 +177,7 @@ def do_plot(fn, keep, scores, ntest, legend='', metric='auc', sweep_fn=sweep, **
     return (acc,auc)
 
 
-def fig_fpr_tpr():
+def fig_fpr_tpr(outdir, filename):
 
     plt.figure(figsize=(4,3))
 
@@ -216,9 +220,20 @@ def fig_fpr_tpr():
     plt.plot([0, 1], [0, 1], ls='--', color='gray')
     plt.subplots_adjust(bottom=.18, left=.18, top=.96, right=.96)
     plt.legend(fontsize=8)
-    plt.savefig("/tmp/fprtpr.png")
+    plt.savefig(join(outdir, filename))
     plt.show()
 
+def main(argv):
+    if not os.path.exists(FLAGS.outdir):
+        os.makedirs(FLAGS.outdir)
 
-load_data("exp/cifar10/")
-fig_fpr_tpr()
+    load_data(FLAGS.logdir)
+    fig_fpr_tpr(FLAGS.outdir, FLAGS.filename)
+
+if __name__ == '__main__':
+    flags.DEFINE_string('logdir', 'experiments', 'Directory where the checkpoints are saved')
+    flags.DEFINE_string('outdir', 'exp/cifar10/', 'where to save the plot')
+    flags.DEFINE_string('filename', 'fprtpr.png', 'filename of the plot')
+
+    app.run(main)
+    
