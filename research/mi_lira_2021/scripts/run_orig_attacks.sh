@@ -1,8 +1,8 @@
 #!/bin/bash
 
-. scripts/train_original_multigpu.sh
-. scripts/train_targeted_multigpu.sh
-. scripts/train_untargeted_multigpu.sh
+. scripts/orig/train_original_multigpu.sh
+. scripts/orig/train_targeted_multigpu.sh
+. scripts/orig/train_untargeted_multigpu.sh
 
 wait;
 
