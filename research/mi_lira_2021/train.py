@@ -172,7 +172,7 @@ def network(arch: str):
         return functools.partial(wide_resnet.WideResNet, depth=28, width=10)
     raise ValueError('Architecture not recognized', arch)
 
-def get_data(seed):
+def get_data(seed, has_poison=False):
     """
     This is the function to generate subsets of the data for training models.
 
@@ -190,6 +190,10 @@ def get_data(seed):
        or always excluded. So instead, with experiment IDs, we guarantee that
        after FLAGS.num_experiments are done, each example is seen exactly half
        of the time in train, and half of the time not in train.
+
+    Parameters:
+    has_poison - Specify if there is a poison dataset within the FLAGS.logdir 
+                directory. Must be of the same shape as training dataset.
 
     """
     DATA_DIR = os.path.join(os.environ['HOME'], 'TFDS')
@@ -225,6 +229,15 @@ def get_data(seed):
 
     xs = inputs[keep]
     ys = labels[keep]
+
+    if has_poison is not None:
+        poison_xs = np.load(os.path.join(FLAGS.logdir, "x_poison.npy"))
+        poison_ys = np.load(os.path.join(FLAGS.logdir, "y_poison.npy"))
+
+        assert poison_xs.shape[1:] == xs.shape[1:], "Poison dataset is not the appropriate shape"
+        assert poison_ys.shape[1:] == ys.shape[1:], "Poison dataset is not the appropriate shape"
+        xs = np.append(xs, poison_xs, axis=0)
+        ys = np.append(ys, poison_ys, axis=0)
 
     if FLAGS.augment == 'weak':
         aug = lambda x: augment(x, 4)
@@ -282,7 +295,7 @@ def main(argv):
     if not os.path.exists(logdir):
         os.makedirs(logdir)
 
-    train, test, xs, ys, keep, nclass = get_data(seed)
+    train, test, xs, ys, keep, nclass = get_data(seed, FLAGS.poison)
         
     # Define the network and train_it
     tm = MemModule(network(FLAGS.arch), nclass=nclass,
@@ -327,4 +340,5 @@ if __name__ == '__main__':
     flags.DEFINE_integer('save_steps', 10, 'how often to get save model.')
     flags.DEFINE_integer('patience', None, 'Early stopping after this many epochs without progress')
     flags.DEFINE_bool('tunename', False, 'Use tune name?')
+    flags.DEFINE_bool('poison', False, 'Has poison dataset in logdir directory?')
     app.run(main)
