@@ -37,3 +37,4 @@ CUDA_VISIBLE_DEVICES='0' python3 -u train.py --dataset=cifar10  --epochs=100 --s
 CUDA_VISIBLE_DEVICES='1' python3 -u train.py --dataset=cifar10  --epochs=100 --save_steps=20 --arch wrn28-2 --num_experiments 32     --expid 29 --logdir exp/cifar10 &> logs/log_29 &
 CUDA_VISIBLE_DEVICES='0' python3 -u train.py --dataset=cifar10  --epochs=100 --save_steps=20 --arch wrn28-2 --num_experiments 32     --expid 30 --logdir exp/cifar10 &> logs/log_30 &
 CUDA_VISIBLE_DEVICES='1' python3 -u train.py --dataset=cifar10  --epochs=100 --save_steps=20 --arch wrn28-2 --num_experiments 32     --expid 31 --logdir exp/cifar10 &> logs/log_31 &
+wait;
