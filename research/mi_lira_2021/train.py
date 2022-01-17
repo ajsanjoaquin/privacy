@@ -230,7 +230,7 @@ def get_data(seed, has_poison=False):
     xs = inputs[keep]
     ys = labels[keep]
 
-    if has_poison is not None:
+    if has_poison:
         poison_xs = np.load(os.path.join(FLAGS.logdir, "x_poison.npy"))
         poison_ys = np.load(os.path.join(FLAGS.logdir, "y_poison.npy"))
 
