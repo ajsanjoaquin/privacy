@@ -204,7 +204,6 @@ def get_data(seed, has_poison=False):
     else:
         print("First time, creating dataset")
         data = tfds.as_numpy(tfds.load(name=FLAGS.dataset, batch_size=-1, data_dir=DATA_DIR))
-        # CHECK format
         inputs = data['train']['image']
         labels = data['train']['label']
             
