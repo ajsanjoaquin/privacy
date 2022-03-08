@@ -155,7 +155,6 @@ def do_plot(fn, keep, scores, ntest, legend='', metric='auc', sweep_fn=sweep, **
     """
     Generate the ROC curves by using ntest models as test models and the rest to train.
     """
-
     prediction, answers = fn(keep[:-ntest],
                              scores[:-ntest],
                              keep[-ntest:],
@@ -236,4 +235,3 @@ if __name__ == '__main__':
     flags.DEFINE_string('filename', 'fprtpr.png', 'filename of the plot')
 
     app.run(main)
-    
