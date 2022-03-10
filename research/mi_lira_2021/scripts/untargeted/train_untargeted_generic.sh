@@ -1,4 +1,4 @@
-ARG1=${1:-$ARG1}
+ARG1=${1:-25000}
 ARG2=${2:-test}
 
 CUDA_VISIBLE_DEVICES='0' python3 -u train.py --dataset=cifar10  --epochs=100 --save_steps=20 --arch wrn28-2 --num_experiments 32 --poison=True  --dataset_size=$ARG1 --expid 0 --logdir exp/untargeted/$ARG2 &> logs/log_0 &
