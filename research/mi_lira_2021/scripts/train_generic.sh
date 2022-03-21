@@ -2,7 +2,7 @@ ARG1=${1:-test}
 ARG2=${2:-25000}
 ARG3=${3:-True}
 ARG4=${4:-cifar10}
-:'
+#:'' - to comment
 CUDA_VISIBLE_DEVICES='0' python3 -u train.py --dataset=$ARG4     --epochs=100 --save_steps=20 --arch wrn28-2 --num_experiments 128 --poison=$ARG3     --dataset_size=$ARG2 --expid 0 --logdir exp/$ARG1 &> logs/log_0 &
 CUDA_VISIBLE_DEVICES='1' python3 -u train.py --dataset=$ARG4     --epochs=100 --save_steps=20 --arch wrn28-2 --num_experiments 128 --poison=$ARG3     --dataset_size=$ARG2 --expid 1 --logdir exp/$ARG1 &> logs/log_1 &
 CUDA_VISIBLE_DEVICES='0' python3 -u train.py --dataset=$ARG4     --epochs=100 --save_steps=20 --arch wrn28-2 --num_experiments 128 --poison=$ARG3     --dataset_size=$ARG2 --expid 2 --logdir exp/$ARG1 &> logs/log_2 &
@@ -43,7 +43,7 @@ CUDA_VISIBLE_DEVICES='1' python3 -u train.py --dataset=$ARG4     --epochs=100 --
 CUDA_VISIBLE_DEVICES='0' python3 -u train.py --dataset=$ARG4     --epochs=100 --save_steps=20 --arch wrn28-2 --num_experiments 128 --poison=$ARG3     --dataset_size=$ARG2 --expid 30 --logdir exp/$ARG1 &> logs/log_30 &
 CUDA_VISIBLE_DEVICES='1' python3 -u train.py --dataset=$ARG4     --epochs=100 --save_steps=20 --arch wrn28-2 --num_experiments 128 --poison=$ARG3     --dataset_size=$ARG2 --expid 31 --logdir exp/$ARG1 &> logs/log_31 &
 wait;
-'
+
 CUDA_VISIBLE_DEVICES='0' python3 -u train.py --dataset=$ARG4     --epochs=100 --save_steps=20 --arch wrn28-2 --num_experiments 128 --poison=$ARG3     --dataset_size=$ARG2 --expid 32 --logdir exp/$ARG1 &> logs/log_32 &
 CUDA_VISIBLE_DEVICES='1' python3 -u train.py --dataset=$ARG4     --epochs=100 --save_steps=20 --arch wrn28-2 --num_experiments 128 --poison=$ARG3     --dataset_size=$ARG2 --expid 33 --logdir exp/$ARG1 &> logs/log_33 &
 CUDA_VISIBLE_DEVICES='0' python3 -u train.py --dataset=$ARG4     --epochs=100 --save_steps=20 --arch wrn28-2 --num_experiments 128 --poison=$ARG3     --dataset_size=$ARG2 --expid 34 --logdir exp/$ARG1 &> logs/log_34 &

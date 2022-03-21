@@ -15,5 +15,3 @@ wait;
 python3 score.py exp/targeted/base &
 python3 score.py exp/cifar10/ &
 python3 score.py exp/untargeted/base &
-
-wait;
