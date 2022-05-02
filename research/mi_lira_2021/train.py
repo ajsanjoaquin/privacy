@@ -86,6 +86,8 @@ class TrainLoop(objax.Module):
                 loop = range(0, train_size, self.params.batch)
                 for step in loop:
                     progress[:] = (step + (epoch * train_size)) / (num_train_epochs * train_size)
+                    # PRINT HERE
+                    print(next(train_iter)['image'].numpy().shape)
                     self.train_step(summary, next(train_iter), progress)
 
                 # Eval
