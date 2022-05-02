@@ -84,7 +84,7 @@ def main(argv):
 
 	for i in range(FLAGS.exp_num):
 		# Load poisoned model
-		p = "exp/targeted/base/experiment-0_%i" %i
+		p = "exp/targeted/base/experiment-%i_%i" %(i, FLAGS.exp_num)
 
 		model.train(num_train_epochs=20, train_size=len(x_target), train=train_loader, savedir="exp/defence/%i" %i, loaddir=p)
 
