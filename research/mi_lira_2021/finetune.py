@@ -89,5 +89,5 @@ def main(argv):
 		model.train(num_train_epochs=20, train_size=len(x_target), train=train_loader, savedir="exp/defence/%i" %i, loaddir=p)
 
 if __name__ == '__main__':
-    flags.DEFINE_string('exp_num', '32', 'Number of shadow models')
+    flags.DEFINE_string('exp_num', 32, 'Number of shadow models')
     app.run(main)
