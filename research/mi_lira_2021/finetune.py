@@ -1,5 +1,5 @@
 import numpy as np
-import os.path.join as join
+from os.path import join
 import objax, jax
 import tensorflow as tf
 
