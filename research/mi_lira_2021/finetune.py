@@ -51,7 +51,7 @@ class MemModule(MemModule):
                         self.train_step(summary, next(train_iter), progress)
                     
                     print('Epoch %04d  Loss %.2f  Accuracy --' % (epoch + 1, summary['losses/xe']()))
-            objax.io.save_var_collection(join(savedir, 'finetuned.npz'), self.vars())
+            objax.io.save_var_collection(join(savedir, "ckpt", "%010d.npy" %num_train_epochs), self.vars())
 
 def main(argv):
 	del argv
