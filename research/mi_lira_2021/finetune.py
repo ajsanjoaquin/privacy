@@ -100,6 +100,7 @@ def main(argv):
             r = {}
             r.update(model.params)
             open(os.path.join(save,'hparams.json'),"w").write(json.dumps(model.params))
+            shutil.copy(join(p, "keep.npy"), join(save, "keep.npy"))
 
 if __name__ == '__main__':
     flags.DEFINE_integer('exp_num', 32, 'Number of shadow models')
