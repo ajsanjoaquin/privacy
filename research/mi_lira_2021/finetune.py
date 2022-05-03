@@ -55,8 +55,8 @@ class MemModule(MemModule):
             objax.io.save_var_collection(join(savedir, "ckpt", "%010d.npz" %num_train_epochs), self.vars())
 
 def main(argv):
-	del argv
-	tf.config.experimental.set_visible_devices([], "GPU")
+    del argv
+    tf.config.experimental.set_visible_devices([], "GPU")
     
     if not os.path.exists("exp/defence/x_train.npy"):
         os.mkdir("exp/defence")
@@ -64,34 +64,34 @@ def main(argv):
         shutil.copy("exp/cifar10/base/y_train.npy", "exp/defence/y_train.npy")
     
     x_train = np.load("exp/defence/x_train.npy")
-    y_train = np.load("exp/defence/y_train.npy")      
-	     
-	# Define target's dataset
-	targets = np.load("exp/targeted/target_idxs.npy")
-	idxs = np.arange(len(x_train))
-	available = np.delete(idxs, targets, axis=0)
+    y_train = np.load("exp/defence/y_train.npy")
+    
+    # Define target's dataset
+    targets = np.load("exp/targeted/target_idxs.npy")
+    idxs = np.arange(len(x_train))
+    available = np.delete(idxs, targets, axis=0)
 
-	np.random.seed(10)
-	# Assume target owns 10% of data (excluding the targeted data)
-	target_set = np.random.choice(available, int(len(x_train) * 0.1), replace=False)
+    np.random.seed(10)
+    # Assume target owns 10% of data (excluding the targeted data)
+    target_set = np.random.choice(available, int(len(x_train) * 0.1), replace=False)
 
 
-	x_target = x_train[target_set]
-	y_target = y_train[target_set]
+    x_target = x_train[target_set]
+    y_target = y_train[target_set]
 
-	xs = np.append(x_target, x_train[targets], axis=0)
-	ys = np.append(y_target, y_train[targets], axis=0)
+    xs = np.append(x_target, x_train[targets], axis=0)
+    ys = np.append(y_target, y_train[targets], axis=0)
 
-	# train data augmentation
-	aug = lambda x: augment(x, 4)
-	train_loader = DataSet.from_arrays(xs, ys,
-					augment_fn=aug).cache().shuffle(len(x_target)).repeat().parse().augment().batch(batch_num)
-	train_loader = train_loader.nchw().one_hot(10).prefetch(16)
+    # train data augmentation
+    aug = lambda x: augment(x, 4)
+    train_loader = DataSet.from_arrays(xs, ys,
+                    augment_fn=aug).cache().shuffle(len(x_target)).repeat().parse().augment().batch(batch_num)
+    train_loader = train_loader.nchw().one_hot(10).prefetch(16)
 
-	# calls load and Memmodule
-	model = load()
-
-	for i in range(FLAGS.exp_num):
+    # calls load and Memmodule
+    model = load()
+    
+    for i in range(FLAGS.exp_num):
             save = "exp/defence/experiment-%i_%i" %(i, FLAGS.exp_num)
             r = {}
             r.update(model.params)
