@@ -65,7 +65,7 @@ def main(argv):
     
     x_train = np.load("exp/defence/x_train.npy")
     y_train = np.load("exp/defence/y_train.npy")
-    
+
     # Define target's dataset
     targets = np.load("exp/targeted/target_idxs.npy")
     idxs = np.arange(len(x_train))
@@ -93,13 +93,13 @@ def main(argv):
     
     for i in range(FLAGS.exp_num):
             save = "exp/defence/experiment-%i_%i" %(i, FLAGS.exp_num)
-            r = {}
-            r.update(model.params)
-            open(os.path.join(save,'hparams.json'),"w").write(json.dumps(model.params))
 
             # Load poisoned model
             p = "exp/targeted/base/experiment-%i_%i" %(i, FLAGS.exp_num)
             model.train(num_train_epochs=20, train_size=len(x_target), train=train_loader, savedir=save, loaddir=p)
+            r = {}
+            r.update(model.params)
+            open(os.path.join(save,'hparams.json'),"w").write(json.dumps(model.params))
 
 if __name__ == '__main__':
     flags.DEFINE_integer('exp_num', 32, 'Number of shadow models')
