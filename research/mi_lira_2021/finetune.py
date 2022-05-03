@@ -15,13 +15,6 @@ from absl import app, flags
 FLAGS = flags.FLAGS
 batch_num = 256
 
-if not os.path.exists("exp/defence/x_train.npy"):
-    shutil.copy("exp/cifar10/base/x_train.npy", "exp/defence/x_train.npy")
-    shutil.copy("exp/cifar10/base/y_train.npy", "exp/defence/y_train.npy")
-
-x_train = np.load("exp/defence/x_train.npy")
-y_train = np.load("exp/defence/y_train.npy")
-
 def load(arch='wrn28-2'):
     return MemModule(network(arch), nclass=10,
                         mnist=False,
@@ -63,7 +56,15 @@ class MemModule(MemModule):
 
 def main(argv):
 	del argv
-	tf.config.experimental.set_visible_devices([], "GPU")      
+	tf.config.experimental.set_visible_devices([], "GPU")
+    
+    if not os.path.exists("exp/defence/x_train.npy"):
+        os.mkdir("exp/defence")
+        shutil.copy("exp/cifar10/base/x_train.npy", "exp/defence/x_train.npy")
+        shutil.copy("exp/cifar10/base/y_train.npy", "exp/defence/y_train.npy")
+    
+    x_train = np.load("exp/defence/x_train.npy")
+    y_train = np.load("exp/defence/y_train.npy")      
 	     
 	# Define target's dataset
 	targets = np.load("exp/targeted/target_idxs.npy")
