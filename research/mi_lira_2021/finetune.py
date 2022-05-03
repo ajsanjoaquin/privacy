@@ -1,8 +1,10 @@
 import numpy as np
 import os
 from os.path import join
+import json
 import objax, jax
 import tensorflow as tf
+import shutil
 
 from objax.jaxboard import SummaryWriter, Summary
 from train import MemModule, network, augment
@@ -11,11 +13,14 @@ from absl import app, flags
 
 
 FLAGS = flags.FLAGS
-
 batch_num = 256
 
-x_train = np.load("exp/cifar10/base/x_train.npy")
-y_train = np.load("exp/cifar10/base/y_train.npy")
+if not os.path.exists("exp/defence/x_train.npy"):
+    shutil.copy("exp/cifar10/base/x_train.npy", "exp/defence/x_train.npy")
+    shutil.copy("exp/cifar10/base/y_train.npy", "exp/defence/y_train.npy")
+
+x_train = np.load("exp/defence/x_train.npy")
+y_train = np.load("exp/defence/y_train.npy")
 
 def load(arch='wrn28-2'):
     return MemModule(network(arch), nclass=10,
@@ -54,7 +59,7 @@ class MemModule(MemModule):
                     print('Epoch %04d  Loss %.2f  Accuracy --' % (epoch + 1, summary['losses/xe']()))
             if not os.path.exists(os.path.join(savedir, "ckpt")):
                 os.mkdir(join(savedir, "ckpt"))
-            objax.io.save_var_collection(join(savedir, "ckpt", "%010d.npy" %num_train_epochs), self.vars())
+            objax.io.save_var_collection(join(savedir, "ckpt", "%010d.npz" %num_train_epochs), self.vars())
 
 def main(argv):
 	del argv
@@ -86,10 +91,14 @@ def main(argv):
 	model = load()
 
 	for i in range(FLAGS.exp_num):
-		# Load poisoned model
-		p = "exp/targeted/base/experiment-%i_%i" %(i, FLAGS.exp_num)
+            save = "exp/defence/experiment-%i_%i" %(i, FLAGS.exp_num)
+            r = {}
+            r.update(model.params)
+            open(os.path.join(save,'hparams.json'),"w").write(json.dumps(model.params))
 
-		model.train(num_train_epochs=20, train_size=len(x_target), train=train_loader, savedir="exp/defence/%i" %i, loaddir=p)
+            # Load poisoned model
+            p = "exp/targeted/base/experiment-%i_%i" %(i, FLAGS.exp_num)
+            model.train(num_train_epochs=20, train_size=len(x_target), train=train_loader, savedir=save, loaddir=p)
 
 if __name__ == '__main__':
     flags.DEFINE_integer('exp_num', 32, 'Number of shadow models')
