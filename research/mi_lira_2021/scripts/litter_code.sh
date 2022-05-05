@@ -30,10 +30,10 @@ python3 score.py exp/defence
 # Removal Attack; MUST SPECIFY DATASET SIZE AND NO POISON
 #!/bin/bash
 #. scripts/train_generic_mini.sh removal/targeted 47581 False
-python3 -u inference.py --logdir=exp/removal/targeted --datadir=exp/cifar10/base
-python3 score.py --logdir=exp/removal/targeted --datadir=exp/cifar10/base
+#python3 -u inference.py --logdir=exp/removal/targeted --datadir=exp/cifar10/base
+python3 -u score.py --logdir=exp/removal/targeted --datadir=exp/cifar10/base
 
 #. scripts/train_generic_mini.sh removal/untargeted/class 49500 False
 python3 -u inference.py --logdir=exp/removal/untargeted/class --datadir=exp/cifar10/base
-python3 score.py --logdir=exp/removal/untargeted/class --datadir=exp/cifar10/base
+python3 -u score.py --logdir=exp/removal/untargeted/class --datadir=exp/cifar10/base
 
