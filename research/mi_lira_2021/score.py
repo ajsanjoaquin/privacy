@@ -16,6 +16,7 @@ import sys
 import numpy as np
 import os
 import multiprocessing as mp
+from functools import partial
 from absl import app, flags
 FLAGS = flags.FLAGS
 
@@ -57,9 +58,10 @@ def load_one(base, labels):
         np.save(os.path.join(FLAGS.logdir, base, 'scores', f), logit)
 
 
-def load_stats(labels):
+def load_stats(l):
     with mp.Pool(8) as p:
-        p.map(load_one, [x for x in os.listdir(FLAGS.logdir) if 'exp' in x], labels)
+        load=partial(load_one, labels=l)
+        p.map(load, [x for x in os.listdir(FLAGS.logdir) if 'exp' in x])
 
 def main(argv):
     del argv
