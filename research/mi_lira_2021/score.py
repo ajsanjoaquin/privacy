@@ -16,17 +16,18 @@ import sys
 import numpy as np
 import os
 import multiprocessing as mp
-
+from absl import flags
+FLAGS = flags.FLAGS
 
 def load_one(base):
     """
     This loads a  logits and converts it to a scored prediction.
     """
-    root = os.path.join(logdir,base,'logits')
+    root = os.path.join(FLAGS.logdir,base,'logits')
     if not os.path.exists(root): return None
 
-    if not os.path.exists(os.path.join(logdir,base,'scores')):
-        os.mkdir(os.path.join(logdir,base,'scores'))
+    if not os.path.exists(os.path.join(FLAGS.logdir,base,'scores')):
+        os.mkdir(os.path.join(FLAGS.logdir,base,'scores'))
     
     for f in os.listdir(root):
         try:
@@ -53,14 +54,19 @@ def load_one(base):
 
         logit = (np.log(y_true.mean((1))+1e-45) - np.log(y_wrong.mean((1))+1e-45))
 
-        np.save(os.path.join(logdir, base, 'scores', f), logit)
+        np.save(os.path.join(FLAGS.logdir, base, 'scores', f), logit)
 
 
 def load_stats():
     with mp.Pool(8) as p:
-        p.map(load_one, [x for x in os.listdir(logdir) if 'exp' in x])
+        p.map(load_one, [x for x in os.listdir(FLAGS.logdir) if 'exp' in x])
 
-
-logdir = sys.argv[1]
-labels = np.load(os.path.join(logdir,"y_train.npy"))
+if FLAGS.datadir is not None:
+    labels = np.load(os.path.join(FLAGS.datadir,"y_train.npy"))
+else:
+    labels = np.load(os.path.join(FLAGS.logdir,"y_train.npy"))
 load_stats()
+
+if __name__ == '__main__':
+    flags.DEFINE_string('logdir', 'experiments/', 'Directory where to save checkpoints and tensorboard data.')
+    flags.DEFINE_string('datadir', None, 'Directory where intended dataset is stored.')

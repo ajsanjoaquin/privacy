@@ -66,8 +66,12 @@ def main(argv):
             return thing[0]
         return fn
 
-    xs_all = np.load(os.path.join(FLAGS.logdir,"x_train.npy"))[:FLAGS.dataset_size]
-    ys_all = np.load(os.path.join(FLAGS.logdir,"y_train.npy"))[:FLAGS.dataset_size]
+    if FLAGS.datadir is not None:
+        xs_all = np.load(os.path.join(FLAGS.datadir,"x_train.npy"))[:FLAGS.dataset_size]
+        ys_all = np.load(os.path.join(FLAGS.datadir,"y_train.npy"))[:FLAGS.dataset_size]
+    else:
+        xs_all = np.load(os.path.join(FLAGS.logdir,"x_train.npy"))[:FLAGS.dataset_size]
+        ys_all = np.load(os.path.join(FLAGS.logdir,"y_train.npy"))[:FLAGS.dataset_size]
     
     
     def get_loss(model, xbatch, ybatch, shift, reflect=True, stride=1):
@@ -147,4 +151,5 @@ if __name__ == '__main__':
     flags.DEFINE_integer('from_epoch', None, 'which epoch to load from.')
     flags.DEFINE_integer('seed_mod', None, 'keep mod seed.')
     flags.DEFINE_integer('modulus', 8, 'modulus.')
+    flags.DEFINE_string('datadir', None, 'Directory where intended dataset is stored.')
     app.run(main)
